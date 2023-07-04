@@ -2,7 +2,10 @@ module stox
 
 go 1.20
 
-require goa.design/goa/v3 v3.11.3
+require (
+	goa.design/goa/v3 v3.11.3
+	goa.design/plugins/v3 v3.11.3
+)
 
 require (
 	cloud.google.com/go v0.110.3 // indirect
@@ -21,7 +24,10 @@ require (
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/manveru/faker v0.0.0-20171103152722-9fbc68a78c4d // indirect
+	github.com/mattn/go-colorable v0.1.12 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/polygon-io/client-go v1.13.1 // indirect
+	github.com/rs/zerolog v1.29.1 // indirect
 	github.com/sergi/go-diff v1.3.1 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/smarty/assertions v1.15.0 // indirect
@@ -36,4 +42,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/smartystreets/assertions => github.com/smarty/assertions v1.15.0
+//replace github.com/smartystreets/assertions => github.com/smarty/assertions v1.15.0

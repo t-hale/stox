@@ -6,7 +6,8 @@ import (
 	"github.com/alpacahq/alpaca-trade-api-go/v3/marketdata"
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
-	"log"
+	log "stox/gen/log"
+
 	"os"
 	stox "stox/gen/stox"
 	"strings"
@@ -29,26 +30,35 @@ func NewStox(logger *log.Logger) stox.Service {
 }
 
 // Plan implements plan.
-func (s *stoxsrvc) Plan(ctx context.Context, p *stox.PlanPayload) (int, error) {
-	s.logger.Printf("stox.plan called with %+v", p)
-	trade, err := GetLatestTrade(p.Symbol)
+func (s *stoxsrvc) Plan(ctx context.Context, p *stox.PlanPayload) (*stox.VestingSchedule, error) {
+	s.logger.Info().Msgf("stox.plan called with %+v", p)
+	trade, err := s.GetLatestTrade(p.Symbol)
 
 	if err != nil {
-		log.Printf("ERROR: %s", err)
-		return 1, err
+		s.logger.Error().Err(err)
+		return nil, err
+	}
+
+	schedule, err := s.calculateVestingSchedule(p)
+
+	if err != nil {
+		return nil, err
 	}
 
 	formatted, _ := json.MarshalIndent(trade, "", "    ")
-	log.Printf("%s", formatted)
+	s.logger.Info().Msgf("%s", formatted)
 
-	return 0, nil
+	return schedule, nil
 }
 
-func GetLatestTrade(symbol string) (*marketdata.Trade, error) {
-	return GetLatestTradeAlpaca(symbol)
+func (s *stoxsrvc) calculateVestingSchedule(p *stox.PlanPayload) (*stox.VestingSchedule, error) {
+	return nil, nil
+}
+func (s *stoxsrvc) GetLatestTrade(symbol string) (*marketdata.Trade, error) {
+	return s.getLatestTradeAlpaca(symbol)
 }
 
-func GetLatestTradeAlpaca(symbol string) (*marketdata.Trade, error) {
+func (s *stoxsrvc) getLatestTradeAlpaca(symbol string) (*marketdata.Trade, error) {
 	req := marketdata.GetLatestTradeRequest{
 		Feed:     marketdata.IEX,
 		Currency: "USD",
@@ -62,7 +72,7 @@ func GetLatestTradeAlpaca(symbol string) (*marketdata.Trade, error) {
 	return trade, nil
 }
 
-func GetLatestTradePolygon(symbol string) {
+func (s *stoxsrvc) getLatestTradePolygon(symbol string) {
 
 	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
 
@@ -72,11 +82,11 @@ func GetLatestTradePolygon(symbol string) {
 
 	res, err := c.GetLastTrade(context.Background(), &params)
 	if err != nil {
-		log.Println(err)
+		s.logger.Error().Err(err)
 	}
 
 	prettyResult, _ := json.MarshalIndent(res, "", "    ")
 
 	// do something with the result
-	log.Printf("Result : %s", prettyResult)
+	s.logger.Info().Msgf("Result : %s", prettyResult)
 }

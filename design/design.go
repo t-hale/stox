@@ -2,6 +2,7 @@ package design
 
 import (
 	. "goa.design/goa/v3/dsl"
+	_ "goa.design/plugins/v3/zerologger" // Enables the plugin
 )
 
 var _ = API("stox", func() {
@@ -16,16 +17,19 @@ var _ = API("stox", func() {
 })
 
 var _ = Service("stox", func() {
-	Description("The sop service provides advisors with a comprehensive view of a particular stock schedule.")
+	Description("The stox service provides advisors with a comprehensive view of a particular stock schedule.")
 
 	Method("plan", func() {
 		Payload(func() {
 			Field(1, "symbol", String, "stock symbol to retrieve plan for")
 			Field(2, "units", Int64, "number of stock units granted")
-			Required("symbol", "units")
+			Field(3, "grant_date", String, "initial grant date of equities")
+			Field(4, "vest_date", String, "date the equities vest completely")
+			Field(5, "vest_frequency", String, "frequency of vesting schedule (monthly, quarterly, yearly)")
+			Required("symbol", "units", "grant_date", "vest_date", "vest_frequency")
 		})
 
-		Result(Int)
+		Result(VestingSchedule)
 
 		HTTP(func() {
 			POST("/plan")
