@@ -1,3 +1,7 @@
 server
 server-cli
 gen/
+bazel-bin
+bazel-out
+bazel-stox
+bazel-testlogs
