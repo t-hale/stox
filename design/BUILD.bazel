@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "design",
+    srcs = [
+        "design.go",
+        "types.go",
+    ],
+    importpath = "stox/design",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@design_goa_goa_v3//dsl",
+        "@design_goa_plugins_v3//zerologger",
+    ],
+)
