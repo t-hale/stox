@@ -7,12 +7,12 @@ import (
 	"github.com/alpacahq/alpaca-trade-api-go/v3/marketdata"
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
-	log "stox/gen/log"
-	"stox/utils"
+	log "github.com/t-hale/stox/gen/log"
+	"github.com/t-hale/stox/utils"
 	"time"
 
+	stox "github.com/t-hale/stox/gen/stox"
 	"os"
-	stox "stox/gen/stox"
 	"strings"
 )
 

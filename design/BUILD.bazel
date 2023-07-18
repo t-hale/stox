@@ -1,12 +1,20 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
+filegroup(
+    name = "goafiles",
+    srcs = glob([
+        "*.go",
+    ]),
+    visibility = ["//visibility:public"],
+)
+
 go_library(
     name = "design",
     srcs = [
         "design.go",
         "types.go",
     ],
-    importpath = "stox/design",
+    importpath = "github.com/t-hale/stox/design",
     visibility = ["//visibility:public"],
     deps = [
         "@design_goa_goa_v3//dsl",

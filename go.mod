@@ -1,4 +1,4 @@
-module github.com/t-thale/stox
+module github.com/t-hale/stox
 
 go 1.20
 

@@ -442,13 +442,7 @@ def go_dependencies():
         sum = "h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=",
         version = "v1.9.3",
     )
-    go_repository(
-        name = "com_github_smarty_assertions",
-        build_file_proto_mode = "disable_global",
-        importpath = "github.com/smarty/assertions",
-        sum = "h1:cR//PqUBUiQRakZWqBiFFQ9wb8emQGDb0HeGdqGByCY=",
-        version = "v1.15.0",
-    )
+
     go_repository(
         name = "com_github_smartystreets_assertions",
         build_file_proto_mode = "disable_global",

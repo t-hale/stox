@@ -3,6 +3,6 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "utils",
     srcs = ["pointer.go"],
-    importpath = "stox/utils",
+    importpath = "github.com/t-hale/stox/utils",
     visibility = ["//visibility:public"],
 )
