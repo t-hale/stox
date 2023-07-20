@@ -7,6 +7,7 @@ import (
 	"github.com/alpacahq/alpaca-trade-api-go/v3/marketdata"
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
+	"github.com/t-hale/stox/errors"
 	log "github.com/t-hale/stox/gen/log"
 	"github.com/t-hale/stox/utils"
 	"time"
@@ -19,6 +20,12 @@ import (
 const (
 	ALPACA_PAPER_API = "https://paper-api.alpaca.markets"
 	ALPACA_LIVE_API  = "https://api.alpaca.markets"
+)
+
+const (
+	MONTHLY   = "monthly"
+	QUARTERLY = "quarterly"
+	YEARLY    = "yearly"
 )
 
 // stox service example implementation.
@@ -41,8 +48,9 @@ func (s *stoxsrvc) Plan(ctx context.Context, p *stox.VestingPlanRequest) (*stox.
 		s.logger.Error().Err(err)
 		return &stox.VestingPlanResponse{}, err
 	}
-	schedule, err := s.calculateVestingSchedule(p)
+	schedule, err := s.calculateVestingPlan(p)
 	if err != nil {
+		s.logger.Error().Err(err)
 		return &stox.VestingPlanResponse{}, err
 	}
 
@@ -51,42 +59,59 @@ func (s *stoxsrvc) Plan(ctx context.Context, p *stox.VestingPlanRequest) (*stox.
 	return schedule, nil
 }
 
-func (s *stoxsrvc) calculateVestDates(startDate, endDate stox.Date, frequency stox.VestFrequency) (*stox.VestingPlanResponse, error) {
+func (s *stoxsrvc) calculateVestingPlan(p *stox.VestingPlanRequest) (*stox.VestingPlanResponse, error) {
 	var vestEvents []*stox.VestEvent
 
-	curDate, _ := time.Parse(time.RFC3339, string(startDate))
-	compareDate, _ := time.Parse(time.RFC3339, string(endDate))
+	curDate, _ := time.Parse(time.DateOnly, string(p.GrantDate))
+	compareDate, _ := time.Parse(time.DateOnly, string(p.VestDate))
 
 	for {
 
 		var vestEvent stox.VestEvent
 
-		vestEvent.Date = utils.PtrTo(stox.Date(curDate.String()))
+		vestEvent.Date = utils.PtrTo(stox.Date(curDate.Format(time.DateOnly)))
 
 		vestEvents = append(vestEvents, &vestEvent)
 
-		if frequency == "monthly" {
+		switch p.VestFrequency {
+		case MONTHLY:
 			curDate = curDate.AddDate(0, 1, 0)
-		} else if frequency == "quarterly" {
+		case QUARTERLY:
 			curDate = curDate.AddDate(0, 3, 0)
-		} else if frequency == "yearly" {
+		case YEARLY:
 			curDate = curDate.AddDate(1, 0, 0)
-		} else {
-			return &stox.VestingPlanResponse{}, fmt.Errorf("%q invalid vest frequency encountered while calculating vest dates", frequency)
+		default:
+			return nil, fmt.Errorf("%w : unknown vest frequency %q encountered while calculating vest dates", errors.ErrInvalidInput, p.VestFrequency)
 		}
 
-		if curDate.Equal(compareDate) || curDate.After(compareDate) {
+		if curDate.Equal(compareDate) {
+			vestEvents = append(vestEvents, &stox.VestEvent{Date: utils.PtrTo(stox.Date(curDate.Format(time.DateOnly)))})
 			break
 		}
 
+		if curDate.After(compareDate) {
+			return nil, fmt.Errorf("%w : grant_date, vest_date and frequency do not align", errors.ErrInvalidInput)
+		}
+
 	}
+
+	numEvents := len(vestEvents)
+	unitsGrantedPerEvent := p.UnitsGranted / float64(numEvents)
+	totalUnitsGranted := 0.0
+	unitsRemaining := p.UnitsGranted
+
+	for i := 0; i < numEvents; i++ {
+		totalUnitsGranted += unitsGrantedPerEvent
+		unitsRemaining -= unitsGrantedPerEvent
+
+		vestEvents[i].UnitsGranted = utils.PtrTo(unitsGrantedPerEvent)
+		vestEvents[i].TotalAmountGranted = utils.PtrTo(totalUnitsGranted)
+		vestEvents[i].UnitsRemaining = utils.PtrTo(unitsRemaining)
+	}
+
 	return &stox.VestingPlanResponse{
 		VestPlan: vestEvents,
 	}, nil
-}
-
-func (s *stoxsrvc) calculateVestingSchedule(p *stox.VestingPlanRequest) (*stox.VestingPlanResponse, error) {
-	return &stox.VestingPlanResponse{}, nil
 }
 
 func (s *stoxsrvc) GetLatestTrade(symbol string) (*marketdata.Trade, error) {
