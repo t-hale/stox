@@ -48,7 +48,7 @@ func (s *stoxsrvc) Plan(ctx context.Context, p *stox.VestingPlanRequest) (*stox.
 		s.logger.Error().Err(err)
 		return &stox.VestingPlanResponse{}, err
 	}
-	schedule, err := s.calculateVestingPlan(p)
+	schedule, err := s.calculateVestingPlan(p, trade)
 	if err != nil {
 		s.logger.Error().Err(err)
 		return &stox.VestingPlanResponse{}, err
@@ -59,19 +59,25 @@ func (s *stoxsrvc) Plan(ctx context.Context, p *stox.VestingPlanRequest) (*stox.
 	return schedule, nil
 }
 
-func (s *stoxsrvc) calculateVestingPlan(p *stox.VestingPlanRequest) (*stox.VestingPlanResponse, error) {
+func (s *stoxsrvc) calculateVestingPlan(p *stox.VestingPlanRequest, trade *marketdata.Trade) (*stox.VestingPlanResponse, error) {
 	var vestEvents []*stox.VestEvent
 
 	curDate, _ := time.Parse(time.DateOnly, string(p.GrantDate))
 	compareDate, _ := time.Parse(time.DateOnly, string(p.VestDate))
 
-	for {
+	if curDate.After(compareDate) {
+		return nil, fmt.Errorf("%w : GrantDate must occur before VestDate", errors.ErrInvalidInput)
+	}
 
-		var vestEvent stox.VestEvent
+	for curDate.Before(compareDate) {
 
-		vestEvent.Date = utils.PtrTo(stox.Date(curDate.Format(time.DateOnly)))
+		vestEvent := &stox.VestEvent{
+			Date:           utils.PtrTo(stox.Date(curDate.Format(time.DateOnly))),
+			UnitsGranted:   utils.PtrTo(int64(0)),
+			UnitsRemaining: &p.UnitsGranted,
+		}
 
-		vestEvents = append(vestEvents, &vestEvent)
+		vestEvents = append(vestEvents, vestEvent)
 
 		switch p.VestFrequency {
 		case MONTHLY:
@@ -81,35 +87,52 @@ func (s *stoxsrvc) calculateVestingPlan(p *stox.VestingPlanRequest) (*stox.Vesti
 		case YEARLY:
 			curDate = curDate.AddDate(1, 0, 0)
 		default:
-			return nil, fmt.Errorf("%w : unknown vest frequency %q encountered while calculating vest dates", errors.ErrInvalidInput, p.VestFrequency)
-		}
-
-		if curDate.Equal(compareDate) {
-			vestEvents = append(vestEvents, &stox.VestEvent{Date: utils.PtrTo(stox.Date(curDate.Format(time.DateOnly)))})
-			break
-		}
-
-		if curDate.After(compareDate) {
-			return nil, fmt.Errorf("%w : grant_date, vest_date and frequency do not align", errors.ErrInvalidInput)
+			return nil, fmt.Errorf("%w : unknown VestFrequency %q encountered while calculating vesting dates", errors.ErrInvalidInput, p.VestFrequency)
 		}
 
 	}
 
+	if curDate.After(compareDate) {
+		return nil, fmt.Errorf("%w : GrantDate, VestDate and VestFrequency do not align", errors.ErrInvalidInput)
+	}
+
+	if curDate.Equal(compareDate) {
+		vestEvents = append(vestEvents, &stox.VestEvent{Date: utils.PtrTo(stox.Date(curDate.Format(time.DateOnly)))})
+	}
+
 	numEvents := len(vestEvents)
-	unitsGrantedPerEvent := p.UnitsGranted / float64(numEvents)
-	totalUnitsGranted := 0.0
+	unitsGrantedPerEvent := p.UnitsGranted / (int64(numEvents) - 1)
+	totalUnitsGranted := int64(0)
 	unitsRemaining := p.UnitsGranted
 
 	for i := 0; i < numEvents; i++ {
+
+		vestEvents[i].UnitsRemaining = utils.PtrTo(unitsRemaining)
+		vestEvents[i].TotalUnitsGranted = utils.PtrTo(totalUnitsGranted)
+		vestEvents[i].AmountGranted = utils.PtrTo(0.0)
+		vestEvents[i].TotalAmountGranted = utils.PtrTo(0.0)
+
+		if i == 0 {
+			continue
+		}
+
+		if i == numEvents-1 {
+			unitsGrantedPerEvent = unitsRemaining
+		}
+
 		totalUnitsGranted += unitsGrantedPerEvent
 		unitsRemaining -= unitsGrantedPerEvent
 
 		vestEvents[i].UnitsGranted = utils.PtrTo(unitsGrantedPerEvent)
-		vestEvents[i].TotalAmountGranted = utils.PtrTo(totalUnitsGranted)
 		vestEvents[i].UnitsRemaining = utils.PtrTo(unitsRemaining)
+		vestEvents[i].AmountGranted = utils.PtrTo(float64(unitsGrantedPerEvent) * trade.Price)
+		vestEvents[i].TotalAmountGranted = utils.PtrTo(float64(totalUnitsGranted) * trade.Price)
+		vestEvents[i].TotalUnitsGranted = utils.PtrTo(totalUnitsGranted)
 	}
 
 	return &stox.VestingPlanResponse{
+		Symbol:   &p.Symbol,
+		Price:    &trade.Price,
 		VestPlan: vestEvents,
 	}, nil
 }
