@@ -16,20 +16,24 @@ var VestFrequency = Type("VestFrequency", String, func() {
 })
 
 var VestingPlanRequest = Type("VestingPlanRequest", func() {
-	Field(1, "Symbol", String, "stock symbol to retrieve plan for")
-	Field(2, "UnitsGranted", Float64, "number of stock units granted")
-	Field(3, "GrantDate", Date, "initial grant date of equities")
-	Field(4, "VestDate", Date, "date the equities vest completely")
-	Field(5, "VestFrequency", VestFrequency, func() {
+	Attribute("Symbol", String, "stock symbol to retrieve plan for", func() {
+		MinLength(1)
+	})
+	Attribute("UnitsGranted", Int64, "number of stock units granted", func() {
+		Minimum(1)
+	})
+	Attribute("GrantDate", Date, "initial grant date of equities")
+	Attribute("VestDate", Date, "date the equities vest completely")
+	Attribute("VestFrequency", VestFrequency, func() {
 		Description("frequency of vesting schedule (monthly, quarterly, yearly)")
 	})
 	Required("Symbol", "UnitsGranted", "GrantDate", "VestDate", "VestFrequency")
 })
 
 var VestEvent = Type("VestEvent", func() {
-	Attribute("UnitsGranted", Float64)
-	Attribute("UnitsRemaining", Float64)
-	Attribute("TotalUnitsGranted", Float64)
+	Attribute("UnitsGranted", Int64)
+	Attribute("UnitsRemaining", Int64)
+	Attribute("TotalUnitsGranted", Int64)
 	Attribute("Date", Date)
 	Attribute("AmountGranted", Float64)
 	Attribute("TotalAmountGranted", Float64)
@@ -38,5 +42,7 @@ var VestEvent = Type("VestEvent", func() {
 })
 
 var VestingPlanResponse = Type("VestingPlanResponse", func() {
-	Field(1, "VestPlan", ArrayOf(VestEvent))
+	Attribute("Symbol", String)
+	Attribute("Price", Float64)
+	Attribute("VestPlan", ArrayOf(VestEvent))
 })

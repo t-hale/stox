@@ -19,6 +19,5 @@ jobs:
         run: bazel run //:gazelle
       - name: Build the stox service
         run: bazel build :stox
-#      TODO : Uncomment once unit tests are passing again
-#      - name: Run unit tests
-#        run:  bazel run :stox_test
+      - name: Run unit tests
+        run:  bazel run :stox_test
