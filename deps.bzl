@@ -442,7 +442,6 @@ def go_dependencies():
         sum = "h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=",
         version = "v1.9.3",
     )
-
     go_repository(
         name = "com_github_smartystreets_assertions",
         build_file_proto_mode = "disable_global",
@@ -541,7 +540,6 @@ def go_dependencies():
         sum = "h1:lbFYco2+T1Rq8V242mO1kMeQEbsJ5MNnWJaTdLpX9ug=",
         version = "v3.11.3",
     )
-
     go_repository(
         name = "design_goa_plugins_v3",
         build_file_proto_mode = "disable_global",
@@ -637,8 +635,8 @@ def go_dependencies():
         name = "org_golang_google_protobuf",
         build_file_proto_mode = "disable_global",
         importpath = "google.golang.org/protobuf",
-        sum = "h1:kPPoIgf3TsEvrm0PFe15JQ+570QVxYzEvvHqChK+cng=",
-        version = "v1.30.0",
+        sum = "h1:g0LDEJHgrBl9N9r17Ru3sqWhkIx2NB67okBHPwC7hs8=",
+        version = "v1.31.0",
     )
     go_repository(
         name = "org_golang_x_crypto",

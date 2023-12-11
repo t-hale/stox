@@ -9,6 +9,7 @@ require (
 	github.com/rs/zerolog v1.29.1
 	goa.design/goa/v3 v3.11.3
 	goa.design/plugins/v3 v3.11.3
+	google.golang.org/protobuf v1.31.0
 )
 
 require (
