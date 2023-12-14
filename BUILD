@@ -68,6 +68,7 @@ go_test(
         "//utils",
         "@com_github_alpacahq_alpaca_trade_api_go_v3//marketdata",
         "@com_github_google_go_cmp//cmp",
+        "@com_github_google_go_cmp//cmp/cmpopts",
         "@org_golang_google_protobuf//proto",
     ],
 )

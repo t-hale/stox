@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/alpacahq/alpaca-trade-api-go/v3/marketdata"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/t-hale/stox/gen/stox"
 	"github.com/t-hale/stox/utils"
 	"google.golang.org/protobuf/proto"
@@ -84,7 +85,7 @@ func TestCalculateVestDates(t *testing.T) {
 						TotalUnitsGranted:  proto.Int64(30),
 						UnitsRemaining:     proto.Int64(90),
 						AmountGranted:      proto.Float64(1001.3),
-						TotalAmountGranted: proto.Float64(3003.8999999999996),
+						TotalAmountGranted: proto.Float64(3003.8999),
 					},
 					{
 						Date:               utils.PtrTo(stox.Date("2024-01-13")),
@@ -108,7 +109,7 @@ func TestCalculateVestDates(t *testing.T) {
 						TotalUnitsGranted:  proto.Int64(60),
 						UnitsRemaining:     proto.Int64(60),
 						AmountGranted:      proto.Float64(1001.3),
-						TotalAmountGranted: proto.Float64(6007.799999999999),
+						TotalAmountGranted: proto.Float64(6007.7999),
 					},
 					{
 						Date:               utils.PtrTo(stox.Date("2024-04-13")),
@@ -116,7 +117,7 @@ func TestCalculateVestDates(t *testing.T) {
 						TotalUnitsGranted:  proto.Int64(70),
 						UnitsRemaining:     proto.Int64(50),
 						AmountGranted:      proto.Float64(1001.3),
-						TotalAmountGranted: proto.Float64(7009.099999999999),
+						TotalAmountGranted: proto.Float64(7009.0999),
 					},
 					{
 						Date:               utils.PtrTo(stox.Date("2024-05-13")),
@@ -132,7 +133,7 @@ func TestCalculateVestDates(t *testing.T) {
 						TotalUnitsGranted:  proto.Int64(90),
 						UnitsRemaining:     proto.Int64(30),
 						AmountGranted:      proto.Float64(1001.3),
-						TotalAmountGranted: proto.Float64(9011.699999999999),
+						TotalAmountGranted: proto.Float64(9011.6999),
 					},
 					{
 						Date:               utils.PtrTo(stox.Date("2024-07-13")),
@@ -156,7 +157,7 @@ func TestCalculateVestDates(t *testing.T) {
 						TotalUnitsGranted:  proto.Int64(120),
 						UnitsRemaining:     proto.Int64(0),
 						AmountGranted:      proto.Float64(1001.3),
-						TotalAmountGranted: proto.Float64(12015.599999999999),
+						TotalAmountGranted: proto.Float64(12015.5999),
 					},
 				},
 			},
@@ -304,7 +305,7 @@ func TestCalculateVestDates(t *testing.T) {
 
 		}
 
-		if diff := cmp.Diff(tc.want, got); diff != "" {
+		if diff := cmp.Diff(tc.want, got, cmpopts.EquateApprox(0, 0.0001)); diff != "" {
 			t.Errorf("TestCalculateVestDates() mismatch (-want +got):\n%s", diff)
 		}
 

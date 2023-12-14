@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/alpacahq/alpaca-trade-api-go/v3 v3.0.1
-	github.com/google/go-cmp v0.5.9
+	github.com/google/go-cmp v0.6.0
 	github.com/polygon-io/client-go v1.13.1
 	github.com/rs/zerolog v1.29.1
 	goa.design/goa/v3 v3.11.3
