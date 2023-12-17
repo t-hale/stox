@@ -52,7 +52,7 @@ func TestCalculateVestDates(t *testing.T) {
 				Price: 100.13,
 			},
 			want: &stox.VestingPlanResponse{
-				Symbol: utils.PtrTo("FOO"),
+				Symbol: proto.String("FOO"),
 				Price:  proto.Float64(100.13),
 				VestPlan: []*stox.VestEvent{
 					{
@@ -176,7 +176,7 @@ func TestCalculateVestDates(t *testing.T) {
 				Price: 72.45,
 			},
 			want: &stox.VestingPlanResponse{
-				Symbol: utils.PtrTo("FOO"),
+				Symbol: proto.String("FOO"),
 				Price:  proto.Float64(72.45),
 				VestPlan: []*stox.VestEvent{
 					{
@@ -236,7 +236,7 @@ func TestCalculateVestDates(t *testing.T) {
 				Price: 5.71,
 			},
 			want: &stox.VestingPlanResponse{
-				Symbol: utils.PtrTo("BAR"),
+				Symbol: proto.String("BAR"),
 				Price:  proto.Float64(5.71),
 				VestPlan: []*stox.VestEvent{
 					{
