@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/alpacahq/alpaca-trade-api-go/v3/marketdata"
+	"github.com/golang/protobuf/proto"
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/t-hale/stox/errors"
@@ -73,7 +74,7 @@ func (s *stoxsrvc) calculateVestingPlan(p *stox.VestingPlanRequest, trade *marke
 
 		vestEvent := &stox.VestEvent{
 			Date:           utils.PtrTo(stox.Date(curDate.Format(time.DateOnly))),
-			UnitsGranted:   utils.PtrTo(int64(0)),
+			UnitsGranted:   proto.Int64(0),
 			UnitsRemaining: &p.UnitsGranted,
 		}
 
@@ -107,10 +108,10 @@ func (s *stoxsrvc) calculateVestingPlan(p *stox.VestingPlanRequest, trade *marke
 
 	for i := 0; i < numEvents; i++ {
 
-		vestEvents[i].UnitsRemaining = utils.PtrTo(unitsRemaining)
-		vestEvents[i].TotalUnitsGranted = utils.PtrTo(totalUnitsGranted)
-		vestEvents[i].AmountGranted = utils.PtrTo(0.0)
-		vestEvents[i].TotalAmountGranted = utils.PtrTo(0.0)
+		vestEvents[i].UnitsRemaining = proto.Int64(unitsRemaining)
+		vestEvents[i].TotalUnitsGranted = proto.Int64(totalUnitsGranted)
+		vestEvents[i].AmountGranted = proto.Float64(0.0)
+		vestEvents[i].TotalAmountGranted = proto.Float64(0.0)
 
 		if i == 0 {
 			continue
@@ -123,11 +124,11 @@ func (s *stoxsrvc) calculateVestingPlan(p *stox.VestingPlanRequest, trade *marke
 		totalUnitsGranted += unitsGrantedPerEvent
 		unitsRemaining -= unitsGrantedPerEvent
 
-		vestEvents[i].UnitsGranted = utils.PtrTo(unitsGrantedPerEvent)
-		vestEvents[i].UnitsRemaining = utils.PtrTo(unitsRemaining)
-		vestEvents[i].AmountGranted = utils.PtrTo(float64(unitsGrantedPerEvent) * trade.Price)
-		vestEvents[i].TotalAmountGranted = utils.PtrTo(float64(totalUnitsGranted) * trade.Price)
-		vestEvents[i].TotalUnitsGranted = utils.PtrTo(totalUnitsGranted)
+		vestEvents[i].UnitsGranted = proto.Int64(unitsGrantedPerEvent)
+		vestEvents[i].UnitsRemaining = proto.Int64(unitsRemaining)
+		vestEvents[i].AmountGranted = proto.Float64(float64(unitsGrantedPerEvent) * trade.Price)
+		vestEvents[i].TotalAmountGranted = proto.Float64(float64(totalUnitsGranted) * trade.Price)
+		vestEvents[i].TotalUnitsGranted = proto.Int64(totalUnitsGranted)
 	}
 
 	return &stox.VestingPlanResponse{

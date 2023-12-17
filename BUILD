@@ -15,6 +15,7 @@ go_library(
         "//gen/stox",
         "//utils",
         "@com_github_alpacahq_alpaca_trade_api_go_v3//marketdata",
+        "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_polygon_io_client_go//rest",
         "@com_github_polygon_io_client_go//rest/models",
     ],
