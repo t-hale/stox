@@ -1,6 +1,9 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+on: [ push ]
+env:
+  GOPATH: /home/runner/go
+  GOCACHE: /home/runner/go/.cache
 jobs:
   pull-request-status-checks:
     runs-on: ubuntu-latest
@@ -8,16 +11,25 @@ jobs:
       - name: Setup env vars
         run: |
           echo "GOPATH=/home/runner/go" >> "$GITHUB_ENV"
+          echo "GOCACHE=/home/runner/go/.cache" >> "$GITHUB_ENV"
           echo "PATH=$PATH:/home/runner/go/bin" >> "$GITHUB_ENV"
+#      - name: Clean out go cache
+#        run: go clean -cache && go clean -modcache
+#      - uses: actions/setup-go@v4
+#        with:
+#          go-version: '>=1.20.6'
       - name: Checkout codebase
         uses: actions/checkout@v4
       - name: Install goa
         run: go install goa.design/goa/v3/cmd/goa@v3
       - name: Generate Server, CLI and Service definitions
-        run: goa gen github.com/t-hale/stox/design
+        run: bazel build //:goagen --spawn_strategy=local --action_env=GOCACHE=${HOME}/.cache --action_env=GOPATH=${GOPATH}
       - name: Run gazelle to generate BUILD files
-        run: bazel run //:gazelle
+        run: bazel run //:gazelle --action_env=GOCACHE=${HOME}/.cache --action_env=GOPATH=${GOPATH}
       - name: Build the stox service
-        run: bazel build :stox
+        run: |
+          git status
+          git diff
+          bazel build :stox --action_env=GOCACHE=${HOME}/.cache --action_env=GOPATH=${GOPATH} --spawn_strategy=local
       - name: Run unit tests
-        run:  bazel run :stox_test
+        run: bazel run :stox_test

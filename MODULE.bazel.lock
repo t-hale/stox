@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "354648757067b0ef71b30a794d3367e9b4cd5e5ddfaad7caf233aafe7e45f548",
+  "moduleFileHash": "11c5eafde9382bfea7bdde8e560d091136e6b02711ce3a52826bb63eeffd9b12",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -50,9 +50,11 @@
           },
           "imports": {
             "com_github_alpacahq_alpaca_trade_api_go_v3": "com_github_alpacahq_alpaca_trade_api_go_v3",
+            "com_github_golang_protobuf": "com_github_golang_protobuf",
             "com_github_google_go_cmp": "com_github_google_go_cmp",
             "com_github_polygon_io_client_go": "com_github_polygon_io_client_go",
             "com_github_rs_zerolog": "com_github_rs_zerolog",
+            "design_goa_goa": "design_goa_goa",
             "design_goa_goa_v3": "design_goa_goa_v3",
             "design_goa_plugins_v3": "design_goa_plugins_v3",
             "org_golang_google_protobuf": "org_golang_google_protobuf"
@@ -1157,8 +1159,8 @@
         "accumulatedFileDigests": {
           "@@rules_go~0.43.0//:go.mod": "58f9901703af412a1a8771d283721ef391c0ca1cc6ef3c141334311965535676",
           "@@gazelle~0.34.0//:go.mod": "9ae159a385b2f244bbe964b9f91dbea6e7bd534e0b22e846655f241c65de2c49",
-          "@@//:go.mod": "38e1f56916eed86d8774c5c3586c549eae6a1520a5a277349a23f3ed90821895",
-          "@@//:go.sum": "3937ff6bc55dc50cb9c860815e4ab28ece39ff2298b2140e8e695ddae00878b1",
+          "@@//:go.mod": "0e81ae6644ab24ed6b9597d659f94ac371032e6f4c50ac70347f5980acbf1631",
+          "@@//:go.sum": "10de77a99bc04f201158311d510a3b56bc0fdc9c58abd71077d650217927a44e",
           "@@rules_go~0.43.0//:go.sum": "c6368ec1da45691f9148115d7317e740c3b32313b624b8f6545ef36b2ab4d781",
           "@@gazelle~0.34.0//:go.sum": "7469786f3930030c430969cedae951e6947cb40f4a563dac94a350659c0fedc4"
         },
@@ -1452,6 +1454,22 @@
               "sum": "h1:wwearW+L7sAPSomPIgJ3bVn6Ck00HGQnn5HMLwf0azo=",
               "replace": "",
               "version": "v0.110.3"
+            }
+          },
+          "in_gopkg_yaml_v2": {
+            "bzlFile": "@@gazelle~0.34.0//internal:go_repository.bzl",
+            "ruleClassName": "go_repository",
+            "attributes": {
+              "name": "gazelle~0.34.0~go_deps~in_gopkg_yaml_v2",
+              "importpath": "gopkg.in/yaml.v2",
+              "build_directives": [],
+              "build_file_generation": "auto",
+              "build_extra_args": [],
+              "patches": [],
+              "patch_args": [],
+              "sum": "h1:D8xgwECY7CYvx+Y2n4sBz93Jn9JRvxdiyyo8CTfuKaY=",
+              "replace": "",
+              "version": "v2.4.0"
             }
           },
           "com_github_josharian_intern": {
@@ -1776,6 +1794,22 @@
               "version": "v1.3.1"
             }
           },
+          "design_goa_goa": {
+            "bzlFile": "@@gazelle~0.34.0//internal:go_repository.bzl",
+            "ruleClassName": "go_repository",
+            "attributes": {
+              "name": "gazelle~0.34.0~go_deps~design_goa_goa",
+              "importpath": "goa.design/goa",
+              "build_directives": [],
+              "build_file_generation": "auto",
+              "build_extra_args": [],
+              "patches": [],
+              "patch_args": [],
+              "sum": "h1:mjAtiy7ZdZIkj974hpFxCR6bL69qprfV00Veu3Vybts=",
+              "replace": "",
+              "version": "v2.2.5+incompatible"
+            }
+          },
           "com_github_golang_protobuf": {
             "bzlFile": "@@gazelle~0.34.0//internal:go_repository.bzl",
             "ruleClassName": "go_repository",
@@ -1835,6 +1869,7 @@
                 "com_github_google_go_cmp": "github.com/google/go-cmp",
                 "com_github_polygon_io_client_go": "github.com/polygon-io/client-go",
                 "com_github_rs_zerolog": "github.com/rs/zerolog",
+                "design_goa_goa": "goa.design/goa",
                 "design_goa_goa_v3": "goa.design/goa/v3",
                 "design_goa_plugins_v3": "goa.design/plugins/v3",
                 "org_golang_google_protobuf": "google.golang.org/protobuf",
@@ -1864,6 +1899,7 @@
                 "org_golang_x_sys": "golang.org/x/sys",
                 "org_golang_x_text": "golang.org/x/text",
                 "org_golang_x_tools": "golang.org/x/tools",
+                "in_gopkg_yaml_v2": "gopkg.in/yaml.v2",
                 "in_gopkg_yaml_v3": "gopkg.in/yaml.v3",
                 "com_github_bazelbuild_buildtools": "github.com/bazelbuild/buildtools",
                 "com_github_gogo_protobuf": "github.com/gogo/protobuf",
@@ -1957,6 +1993,7 @@
             "com_github_google_go_cmp",
             "com_github_polygon_io_client_go",
             "com_github_rs_zerolog",
+            "design_goa_goa",
             "design_goa_goa_v3",
             "design_goa_plugins_v3",
             "org_golang_google_protobuf"
