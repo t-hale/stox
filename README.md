@@ -1,0 +1,1 @@
+stox is a lightweight service used for calculating vesting schedules of stock awards, restricted stock grants and other types of stock options
