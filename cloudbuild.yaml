@@ -27,8 +27,11 @@ steps:
   - name : 'gcr.io/cloud-builders/bazel'
     args : ['run', '//:gazelle']
   # Build the stox service
-  - name : 'gcr.io/cloud-buildres/bazel'
+  - name : 'gcr.io/cloud-builders/bazel'
     args : ['build', ':stox']
+  # Run unit tests
+  - name: 'gcr.io/cloud-builders/bazel'
+    args: [ 'run', ':stox_test' ]
 
 options:
   logging: CLOUD_LOGGING_ONLY
