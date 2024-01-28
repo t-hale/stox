@@ -1,8 +1,19 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_push")
 
-# gazelle:prefix github.com/t-hale/stox
-gazelle(name = "gazelle")
+oci_image(
+    name = "ubuntu",
+    base = "@bazel_ubuntu",
+    user = "ubuntu",
+)
+
+oci_push(
+    name = "publish",
+    image = ":ubuntu",
+    remote_tags = ["latest"],
+    repository = "us-docker.pkg.dev/subtle-canto-412404/docker/ubuntu",
+)
 
 go_library(
     name = "stox",
@@ -18,6 +29,20 @@ go_library(
         "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_polygon_io_client_go//rest",
         "@com_github_polygon_io_client_go//rest/models",
+    ],
+)
+
+go_test(
+    name = "stox_test",
+    srcs = ["stox_test.go"],
+    embed = [":stox"],
+    deps = [
+        "//gen/stox",
+        "//utils",
+        "@com_github_alpacahq_alpaca_trade_api_go_v3//marketdata",
+        "@com_github_google_go_cmp//cmp",
+        "@com_github_google_go_cmp//cmp/cmpopts",
+        "@org_golang_google_protobuf//proto",
     ],
 )
 
@@ -49,6 +74,9 @@ go_library(
 #    cmd = "goa gen github.com/t-hale/stox/design",
 #)
 
+# gazelle:prefix github.com/t-hale/stox
+gazelle(name = "gazelle")
+
 gazelle(
     name = "gazelle-update-repos",
     args = [
@@ -58,18 +86,4 @@ gazelle(
         "-build_file_proto_mode=disable_global",
     ],
     command = "update-repos",
-)
-
-go_test(
-    name = "stox_test",
-    srcs = ["stox_test.go"],
-    embed = [":stox"],
-    deps = [
-        "//gen/stox",
-        "//utils",
-        "@com_github_alpacahq_alpaca_trade_api_go_v3//marketdata",
-        "@com_github_google_go_cmp//cmp",
-        "@com_github_google_go_cmp//cmp/cmpopts",
-        "@org_golang_google_protobuf//proto",
-    ],
 )

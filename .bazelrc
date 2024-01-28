@@ -1,0 +1,5 @@
+# Enable Bzlmod for every Bazel command
+common --enable_bzlmod
+
+# Definition of --config=cloudbuild
+run:cloudbuild --output_user_root=/workspace/bazel

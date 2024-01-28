@@ -9,17 +9,44 @@ module(
     version = "1.0",
 )
 
+bazel_dep(name = "aspect_bazel_lib", version = "2.3.0")
 bazel_dep(name = "bazel_skylib", version = "1.5.0")
 
 # If the Gazelle plugin is needed:
 bazel_dep(name = "bazel_skylib_gazelle_plugin", version = "1.5.0", dev_dependency = True)
 
-bazel_dep(name = "rules_go", version = "0.43.0", repo_name = "io_bazel_rules_go")
+bazel_dep(name = "rules_go", version = "0.44.0", repo_name = "io_bazel_rules_go")
 
 go_sdk = use_extension("@io_bazel_rules_go//go:extensions.bzl", "go_sdk")
 
-bazel_dep(name = "gazelle", version = "0.34.0", repo_name = "bazel_gazelle")
+bazel_dep(name = "gazelle", version = "0.35.0", repo_name = "bazel_gazelle")
 
 go_deps = use_extension("@bazel_gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "//:go.mod")
-use_repo(go_deps, "com_github_alpacahq_alpaca_trade_api_go_v3", "com_github_golang_protobuf", "com_github_google_go_cmp", "com_github_polygon_io_client_go", "com_github_rs_zerolog", "design_goa_goa_v3", "design_goa_plugins_v3", "org_golang_google_protobuf")
+use_repo(
+    go_deps,
+    "com_github_alpacahq_alpaca_trade_api_go_v3",
+    "com_github_golang_protobuf",
+    "com_github_google_go_cmp",
+    "com_github_polygon_io_client_go",
+    "com_github_rs_zerolog",
+    "design_goa_goa_v3",
+    "design_goa_plugins_v3",
+    "org_golang_google_protobuf",
+)
+
+bazel_dep(name = "rules_oci", version = "1.6.0")
+# For testing, we also recommend https://registry.bazel.build/modules/container_structure_test
+
+oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+
+# Declare external images you need to pull, for example:
+oci.pull(
+    name = "bazel_ubuntu",
+    # tag = "7.0.2",
+    digest = "sha256:ad5916a7e27eeddbddb003d7671d5a8202c7346e3c682c059b27467b47c0f6d4",
+    image = "gcr.io/bazel-public/bazel",
+)
+
+# For each oci.pull call, repeat the "name" here to expose them as dependencies.
+use_repo(oci, "bazel_ubuntu")
