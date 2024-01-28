@@ -26,3 +26,9 @@ steps:
   # Run gazelle
   - name : 'gcr.io/cloud-builders/bazel'
     args : ['run', '//:gazelle']
+  # Build the stox service
+  - name : 'gcr.io/cloud-buildres/bazel'
+    args : ['build', ':stox']
+
+options:
+  logging: CLOUD_LOGGING_ONLY
