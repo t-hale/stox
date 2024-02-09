@@ -1,0 +1,13 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "stox",
+    srcs = [
+        "client.go",
+        "endpoints.go",
+        "service.go",
+    ],
+    importpath = "github.com/t-hale/stox/gen/stox",
+    visibility = ["//visibility:public"],
+    deps = ["@design_goa_goa_v3//pkg"],
+)
