@@ -1,0 +1,207 @@
+openapi: 3.0.3
+info:
+    title: Stock Option Planner Service
+    description: Service for planning stock options including vesting schedules
+    version: "1.0"
+servers:
+    - url: http://localhost:8000
+paths:
+    /openapi.json:
+        get:
+            tags:
+                - stox
+            summary: Download ./gen/http/openapi.json
+            operationId: stox#/openapi.json
+            responses:
+                "200":
+                    description: File downloaded
+    /plan:
+        post:
+            tags:
+                - stox
+            summary: plan stox
+            operationId: stox#plan
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PlanRequestBody'
+                        example:
+                            GrantDate: "1982-02-19"
+                            Symbol: pu2
+                            UnitsGranted: 3172591699515641958
+                            VestDate: "1987-04-16"
+                            VestFrequency: monthly
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/VestingPlanResponse'
+                            example:
+                                Price: 0.8825776127720387
+                                Symbol: Ea quis sint sed atque cumque.
+                                VestPlan:
+                                    - AmountGranted: 0.7532369975263532
+                                      Date: "2011-03-31"
+                                      TotalAmountGranted: 0.6484702584169254
+                                      TotalUnitsGranted: 7899848534443619422
+                                      UnitsGranted: 8659015700085933293
+                                      UnitsRemaining: 1222918483882356424
+                                    - AmountGranted: 0.7532369975263532
+                                      Date: "2011-03-31"
+                                      TotalAmountGranted: 0.6484702584169254
+                                      TotalUnitsGranted: 7899848534443619422
+                                      UnitsGranted: 8659015700085933293
+                                      UnitsRemaining: 1222918483882356424
+                                    - AmountGranted: 0.7532369975263532
+                                      Date: "2011-03-31"
+                                      TotalAmountGranted: 0.6484702584169254
+                                      TotalUnitsGranted: 7899848534443619422
+                                      UnitsGranted: 8659015700085933293
+                                      UnitsRemaining: 1222918483882356424
+components:
+    schemas:
+        PlanRequestBody:
+            type: object
+            properties:
+                GrantDate:
+                    type: string
+                    description: initial grant date of equities
+                    example: "1993-01-28"
+                    format: date
+                Symbol:
+                    type: string
+                    description: stock symbol to retrieve plan for
+                    example: "2"
+                    minLength: 1
+                UnitsGranted:
+                    type: integer
+                    description: number of stock units granted
+                    example: 1357232080730236522
+                    minimum: 1
+                VestDate:
+                    type: string
+                    description: date the equities vest completely
+                    example: "2011-01-07"
+                    format: date
+                VestFrequency:
+                    type: string
+                    description: frequency of vesting schedule (monthly, quarterly, yearly)
+                    example: yearly
+                    enum:
+                        - monthly
+                        - quarterly
+                        - yearly
+            example:
+                GrantDate: "2006-06-11"
+                Symbol: kq
+                UnitsGranted: 6711637170639768692
+                VestDate: "1993-11-11"
+                VestFrequency: quarterly
+            required:
+                - Symbol
+                - UnitsGranted
+                - GrantDate
+                - VestDate
+                - VestFrequency
+        VestEvent:
+            type: object
+            properties:
+                AmountGranted:
+                    type: number
+                    example: 0.25174018914064805
+                    format: double
+                Date:
+                    type: string
+                    example: Aut dolores.
+                    format: date
+                TotalAmountGranted:
+                    type: number
+                    example: 0.9484544105463529
+                    format: double
+                TotalUnitsGranted:
+                    type: integer
+                    example: 4809580503642877940
+                    format: int64
+                UnitsGranted:
+                    type: integer
+                    example: 2787263429172515249
+                    format: int64
+                UnitsRemaining:
+                    type: integer
+                    example: 8329127229278916597
+                    format: int64
+            example:
+                AmountGranted: 0.6352778436771386
+                Date: Aut dolores.
+                TotalAmountGranted: 0.8805425242759717
+                TotalUnitsGranted: 2407319606856915950
+                UnitsGranted: 8123031992816428074
+                UnitsRemaining: 3891452294483946324
+        VestingPlanResponse:
+            type: object
+            properties:
+                Price:
+                    type: number
+                    example: 0.6188373792649716
+                    format: double
+                Symbol:
+                    type: string
+                    example: Nemo et porro nihil voluptas rerum optio.
+                VestPlan:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/VestEvent'
+                    example:
+                        - AmountGranted: 0.7532369975263532
+                          Date: "2011-03-31"
+                          TotalAmountGranted: 0.6484702584169254
+                          TotalUnitsGranted: 7899848534443619422
+                          UnitsGranted: 8659015700085933293
+                          UnitsRemaining: 1222918483882356424
+                        - AmountGranted: 0.7532369975263532
+                          Date: "2011-03-31"
+                          TotalAmountGranted: 0.6484702584169254
+                          TotalUnitsGranted: 7899848534443619422
+                          UnitsGranted: 8659015700085933293
+                          UnitsRemaining: 1222918483882356424
+                        - AmountGranted: 0.7532369975263532
+                          Date: "2011-03-31"
+                          TotalAmountGranted: 0.6484702584169254
+                          TotalUnitsGranted: 7899848534443619422
+                          UnitsGranted: 8659015700085933293
+                          UnitsRemaining: 1222918483882356424
+                        - AmountGranted: 0.7532369975263532
+                          Date: "2011-03-31"
+                          TotalAmountGranted: 0.6484702584169254
+                          TotalUnitsGranted: 7899848534443619422
+                          UnitsGranted: 8659015700085933293
+                          UnitsRemaining: 1222918483882356424
+            example:
+                Price: 0.5498071212914236
+                Symbol: Dolorum amet.
+                VestPlan:
+                    - AmountGranted: 0.7532369975263532
+                      Date: "2011-03-31"
+                      TotalAmountGranted: 0.6484702584169254
+                      TotalUnitsGranted: 7899848534443619422
+                      UnitsGranted: 8659015700085933293
+                      UnitsRemaining: 1222918483882356424
+                    - AmountGranted: 0.7532369975263532
+                      Date: "2011-03-31"
+                      TotalAmountGranted: 0.6484702584169254
+                      TotalUnitsGranted: 7899848534443619422
+                      UnitsGranted: 8659015700085933293
+                      UnitsRemaining: 1222918483882356424
+                    - AmountGranted: 0.7532369975263532
+                      Date: "2011-03-31"
+                      TotalAmountGranted: 0.6484702584169254
+                      TotalUnitsGranted: 7899848534443619422
+                      UnitsGranted: 8659015700085933293
+                      UnitsRemaining: 1222918483882356424
+tags:
+    - name: stox
+      description: The stox service provides advisors with a comprehensive view of a particular stock schedule.
