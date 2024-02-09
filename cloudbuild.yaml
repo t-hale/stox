@@ -40,14 +40,6 @@ steps:
     name: ubuntu
     entrypoint: bash
     args: [ "-c", "mkdir -p /workspace/go/tmp" ]
-  - id: "Install goa"
-    name: "$_GO_IMAGE"
-    entrypoint: "go"
-    args : ["install", "goa.design/goa/v3/cmd/goa@v3"]
-  - id: "Generate goa files"
-    name: "$_GO_IMAGE"
-    entrypoint: "$_GOPATH/bin/goa"
-    args: ["gen", "github.com/t-hale/stox/design"]
   - id: "Run gazelle"
     name : "$_BAZEL_IMAGE"
     args : ["run", ":gazelle"]
