@@ -1,6 +1,7 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@rules_oci//oci:defs.bzl", "oci_image", "oci_push")
+load("//bazel:goa.bzl", "goa")
 
 oci_image(
     name = "ubuntu",
@@ -16,7 +17,7 @@ oci_push(
 )
 
 go_library(
-    name = "stox",
+    name = "stox_lib",
     srcs = ["stox.go"],
     importpath = "github.com/t-hale/stox",
     visibility = ["//visibility:public"],
@@ -35,7 +36,7 @@ go_library(
 go_test(
     name = "stox_test",
     srcs = ["stox_test.go"],
-    embed = [":stox"],
+    embed = [":stox_lib"],
     deps = [
         "//gen/stox",
         "//utils",
@@ -46,33 +47,14 @@ go_test(
     ],
 )
 
-#genrule(
-#    name = "goagen",
-#    #    srcs = [
-#    #        "//design:goafiles",
-#    #    ],
-#    outs = [
-#        "gen/http/cli/server/cli.go",
-#        "gen/http/openapi.json",
-#        "gen/http/openapi.yaml",
-#        "gen/http/openapi3.json",
-#        "gen/http/openapi3.yaml",
-#        "gen/http/stox/client/cli.go",
-#        "gen/http/stox/client/client.go",
-#        "gen/http/stox/client/encode_decode.go",
-#        "gen/http/stox/client/paths.go",
-#        "gen/http/stox/client/types.go",
-#        "gen/http/stox/server/encode_decode.go",
-#        "gen/http/stox/server/paths.go",
-#        "gen/http/stox/server/server.go",
-#        "gen/http/stox/server/types.go",
-#        "gen/log/logger.go",
-#        "gen/stox/client.go",
-#        "gen/stox/endpoints.go",
-#        "gen/stox/service.go",
-#    ],
-#    cmd = "goa gen github.com/t-hale/stox/design",
-#)
+goa(
+    name = "goa",
+    package = "github.com/t-hale/stox/design",
+    deps = [
+        ":stox",
+        "//design",
+    ],
+)
 
 # gazelle:prefix github.com/t-hale/stox
 gazelle(name = "gazelle")

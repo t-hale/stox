@@ -1,0 +1,8 @@
+filegroup(
+    name = "gen",
+    srcs = [
+        "log",
+        "stox",
+    ],
+    visibility = ["//visibility:public"],
+)
