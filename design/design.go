@@ -9,9 +9,8 @@ var _ = API("stox", func() {
 	Title("Stock Option Planner Service")
 	Description("Service for planning stock options including vesting schedules")
 	Server("server", func() {
-		Host("localhost", func() {
-			URI("http://localhost:8000")
-			//URI("grpc://localhost:8080")
+		Host("0.0.0.0", func() {
+			URI("http://0.0.0.0:8080")
 		})
 	})
 })
