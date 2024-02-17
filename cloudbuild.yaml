@@ -1,27 +1,3 @@
-#name: GitHub Actions Demo
-#run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-#on: [push]
-#jobs:
-#  pull-request-status-checks:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Setup env vars
-#        run: |
-#          echo "GOPATH=/home/runner/go" >> "$GITHUB_ENV"
-#          echo "PATH=$PATH:/home/runner/go/bin" >> "$GITHUB_ENV"
-#      - name: Checkout codebase
-#        uses: actions/checkout@v4
-#      - name: Install goa
-#        run: go install goa.design/goa/v3/cmd/goa@v3
-#      - name: Generate Server, CLI and Service definitions
-#        run: goa gen github.com/t-hale/stox/design
-#      - name: Run gazelle to generate BUILD files
-#        run: bazel run //:gazelle
-#      - name: Build the stox service
-#        run: bazel build :stox
-#        run:  bazel run :stox_test
-#      - name: Run unit tests
-
 options:
   dynamic_substitutions: true
   env:
@@ -29,16 +5,62 @@ options:
     - "GOCACHE=$_GOCACHE"
     - "GOTMPDIR=$_GOTMPDIR"
 substitutions:
-#  _BAZEL_IMAGE : "us-docker.pkg.dev/subtle-canto-412404/docker/ubuntu"
   _BAZEL_IMAGE : "gcr.io/cloud-builders/bazel:6.2.1"
   _GO_IMAGE : "golang:1.21"
   _GOPATH : "/workspace/go"
   _GOCACHE : "/workspace/go/cache"
   _GOTMPDIR : "/workspace/go/tmp"
+  _PROJECT : "subtle-canto-412404"
+  _REGION : "us-central1"
+  _APP_IMAGE : "ubuntu"
+  _SERVICE : "stox"
 steps:
-  - id: "Build the stox service"
+  - id: "Build the stox library"
     name : "$_BAZEL_IMAGE"
     args : ["build", ":stox"]
+  - id: "Build the stox server"
+    name: "$_BAZEL_IMAGE"
+    args: [ "build", "cmd/server" ]
   - id: "Run unit tests"
     name: "$_BAZEL_IMAGE"
     args: [ "run", ":stox_test"]
+#    waitFor:
+#      - "Build the stox library"
+  - id: "Copy server binary to PWD"
+    name: "bash"
+    script: |
+      #!/usr/bin/env bash
+      cp ./bazel-bin/cmd/server/server_/server .
+  - id: "Build the container image"
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA'
+      - '--build-arg'
+      - 'port=8080'
+      - '.'
+#    waitFor:
+#      - "Build the stox server"
+  - id: "Push the container image to Artifact Registry"
+    name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA' ]
+#    waitFor:
+#      - "Build the container image"
+  - id: "Deploy container image to Cloud Run"
+    name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: "gcloud"
+    args:
+      - 'run'
+      - 'deploy'
+      - '$_SERVICE'
+      - '--image'
+      - 'gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA'
+      - '--region'
+      - '$_REGION'
+      - '--port'
+      - '8080'
+#    waitFor:
+#      - "Push the container image to Container Registry"
+images:
+  - "gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA"

@@ -1,0 +1,22 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "server-cli_lib",
+    srcs = [
+        "http.go",
+        "main.go",
+    ],
+    importpath = "github.com/t-hale/stox/cmd/server-cli",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//gen/http/cli/server",
+        "@design_goa_goa_v3//http",
+        "@design_goa_goa_v3//pkg",
+    ],
+)
+
+go_binary(
+    name = "server-cli",
+    embed = [":server-cli_lib"],
+    visibility = ["//visibility:public"],
+)

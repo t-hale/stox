@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "server",
+    srcs = [
+        "encode_decode.go",
+        "paths.go",
+        "server.go",
+        "types.go",
+    ],
+    importpath = "github.com/t-hale/stox/gen/http/stox/server",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//gen/stox",
+        "@design_goa_goa_v3//http",
+        "@design_goa_goa_v3//pkg",
+    ],
+)
