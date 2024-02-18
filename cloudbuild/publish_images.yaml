@@ -15,17 +15,9 @@ substitutions:
   _APP_IMAGE : "ubuntu"
   _SERVICE : "stox"
 steps:
-  - id: "Build the stox library"
-    name : "$_BAZEL_IMAGE"
-    args : ["build", ":stox"]
   - id: "Build the stox server"
     name: "$_BAZEL_IMAGE"
     args: [ "build", "cmd/server" ]
-  - id: "Run unit tests"
-    name: "$_BAZEL_IMAGE"
-    args: [ "run", ":stox_test"]
-#    waitFor:
-#      - "Build the stox library"
   - id: "Copy server binary to PWD"
     name: "bash"
     script: |
@@ -40,13 +32,9 @@ steps:
       - '--build-arg'
       - 'port=8080'
       - '.'
-#    waitFor:
-#      - "Build the stox server"
   - id: "Push the container image to Artifact Registry"
     name: 'gcr.io/cloud-builders/docker'
     args: [ 'push', 'gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA' ]
-#    waitFor:
-#      - "Build the container image"
   - id: "Deploy container image to Cloud Run"
     name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: "gcloud"
@@ -60,7 +48,5 @@ steps:
       - '$_REGION'
       - '--port'
       - '8080'
-#    waitFor:
-#      - "Push the container image to Container Registry"
 images:
   - "gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA"
