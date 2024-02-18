@@ -1,0 +1,23 @@
+options:
+  dynamic_substitutions: true
+  env:
+    - "GOPATH=$_GOPATH"
+    - "GOCACHE=$_GOCACHE"
+    - "GOTMPDIR=$_GOTMPDIR"
+substitutions:
+  _BAZEL_IMAGE : "gcr.io/cloud-builders/bazel:6.2.1"
+  _GO_IMAGE : "golang:1.21"
+  _GOPATH : "/workspace/go"
+  _GOCACHE : "/workspace/go/cache"
+  _GOTMPDIR : "/workspace/go/tmp"
+  _PROJECT : "subtle-canto-412404"
+  _REGION : "us-central1"
+  _APP_IMAGE : "ubuntu"
+  _SERVICE : "stox"
+steps:
+  - id: "Build the stox library"
+    name : "$_BAZEL_IMAGE"
+    args : ["build", ":stox"]
+  - id: "Run unit tests"
+    name: "$_BAZEL_IMAGE"
+    args: [ "run", ":stox_test"]
