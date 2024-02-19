@@ -30,6 +30,7 @@ use_repo(
     "com_github_google_go_cmp",
     "com_github_polygon_io_client_go",
     "com_github_rs_zerolog",
+    "com_google_cloud_go_logging",
     "design_goa_goa_v3",
     "design_goa_plugins_v3",
     "org_golang_google_protobuf",

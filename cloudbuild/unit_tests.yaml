@@ -18,6 +18,9 @@ steps:
   - id: "Build the stox library"
     name : "$_BAZEL_IMAGE"
     args : ["build", ":stox"]
+  - id: "Build the stox server"
+    name: "$_BAZEL_IMAGE"
+    args: [ "build", "cmd/server" ]
   - id: "Run unit tests"
     name: "$_BAZEL_IMAGE"
     args: [ "run", ":stox_test"]
