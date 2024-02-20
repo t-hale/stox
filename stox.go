@@ -1,6 +1,7 @@
 package stoxapi
 
 import (
+	"cloud.google.com/go/logging"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -9,10 +10,11 @@ import (
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/t-hale/stox/errors"
-	log "github.com/t-hale/stox/gen/log"
 	"github.com/t-hale/stox/utils"
+	"log"
 	"time"
 
+	stoxlog "github.com/t-hale/stox/gen/log"
 	stox "github.com/t-hale/stox/gen/stox"
 	"os"
 	"strings"
@@ -32,29 +34,43 @@ const (
 // stox service example implementation.
 // The example methods log the requests and return zero values.
 type stoxsrvc struct {
-	logger *log.Logger
+	logger *stoxlog.Logger
 }
 
 // NewStox returns the stox service implementation.
-func NewStox(logger *log.Logger) stox.Service {
+func NewStox(logger *stoxlog.Logger) stox.Service {
 	return &stoxsrvc{logger}
 }
 
 // Plan implements plan.
 func (s *stoxsrvc) Plan(ctx context.Context, p *stox.VestingPlanRequest) (*stox.VestingPlanResponse, error) {
+
+	// Create a Client
+	client, err := logging.NewClient(ctx, "my-project")
+	if err != nil {
+		log.Fatal("Failed to initialize cloud run logging instance")
+	}
+
+	logger := client.Logger("main-logger")
+	logger.Log(logging.Entry{Payload: "just getting started"})
+
 	s.logger.Info().Msgf("stox.plan called with %+v", p)
+	logger.Log(logging.Entry{Payload: "calling GetLatestTrade"})
 	trade, err := s.GetLatestTrade(p.Symbol)
 
 	if err != nil {
 		s.logger.Error().Err(err)
 		return &stox.VestingPlanResponse{}, err
 	}
+
+	logger.Log(logging.Entry{Payload: "calling calculateVestingPlan"})
 	schedule, err := s.calculateVestingPlan(p, trade)
 	if err != nil {
 		s.logger.Error().Err(err)
 		return &stox.VestingPlanResponse{}, err
 	}
 
+	logger.Log(logging.Entry{Payload: "printing out trade and schedule information"})
 	s.logger.Debug().Interface("trade", trade).Msgf("")
 	s.logger.Debug().Interface("schedule", schedule).Msgf("")
 	return schedule, nil
