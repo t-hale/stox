@@ -1,7 +1,6 @@
 package stoxapi
 
 import (
-	"cloud.google.com/go/logging"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -44,18 +43,10 @@ func NewStox(logger *stoxlog.Logger) stox.Service {
 
 // Plan implements plan.
 func (s *stoxsrvc) Plan(ctx context.Context, p *stox.VestingPlanRequest) (*stox.VestingPlanResponse, error) {
-
-	// Create a Client
-	client, err := logging.NewClient(ctx, "my-project")
-	if err != nil {
-		log.Fatal("Failed to initialize cloud run logging instance")
-	}
-
-	logger := client.Logger("main-logger")
-	logger.Log(logging.Entry{Payload: "just getting started"})
+	log.Println("Entering Plan function")
 
 	s.logger.Info().Msgf("stox.plan called with %+v", p)
-	logger.Log(logging.Entry{Payload: "calling GetLatestTrade"})
+	log.Println("calling GetLatestTrade")
 	trade, err := s.GetLatestTrade(p.Symbol)
 
 	if err != nil {
@@ -63,14 +54,14 @@ func (s *stoxsrvc) Plan(ctx context.Context, p *stox.VestingPlanRequest) (*stox.
 		return &stox.VestingPlanResponse{}, err
 	}
 
-	logger.Log(logging.Entry{Payload: "calling calculateVestingPlan"})
+	log.Println("calling calculateVestingPlan")
 	schedule, err := s.calculateVestingPlan(p, trade)
 	if err != nil {
 		s.logger.Error().Err(err)
 		return &stox.VestingPlanResponse{}, err
 	}
 
-	logger.Log(logging.Entry{Payload: "printing out trade and schedule information"})
+	log.Println("printing out trade and schedule information")
 	s.logger.Debug().Interface("trade", trade).Msgf("")
 	s.logger.Debug().Interface("schedule", schedule).Msgf("")
 	return schedule, nil
