@@ -7,6 +7,7 @@ import (
 	stoxapi "github.com/t-hale/stox"
 	log "github.com/t-hale/stox/gen/log"
 	stox "github.com/t-hale/stox/gen/stox"
+	stdlog "log"
 	"net"
 	"net/url"
 	"os"
@@ -49,6 +50,7 @@ func main() {
 		stoxEndpoints *stox.Endpoints
 	)
 	{
+		stdlog.Println("Setting up stox.NewEndpoints")
 		stoxEndpoints = stox.NewEndpoints(stoxSvc)
 	}
 
