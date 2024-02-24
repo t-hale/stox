@@ -18,9 +18,8 @@ import (
 
 // Server lists the stox service endpoint HTTP handlers.
 type Server struct {
-	Mounts             []*MountPoint
-	Plan               http.Handler
-	GenHTTPOpenapiJSON http.Handler
+	Mounts []*MountPoint
+	Plan   http.Handler
 }
 
 // MountPoint holds information about the mounted endpoints.
@@ -47,18 +46,12 @@ func New(
 	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
 	errhandler func(context.Context, http.ResponseWriter, error),
 	formatter func(ctx context.Context, err error) goahttp.Statuser,
-	fileSystemGenHTTPOpenapiJSON http.FileSystem,
 ) *Server {
-	if fileSystemGenHTTPOpenapiJSON == nil {
-		fileSystemGenHTTPOpenapiJSON = http.Dir(".")
-	}
 	return &Server{
 		Mounts: []*MountPoint{
 			{"Plan", "POST", "/plan"},
-			{"./gen/http/openapi.json", "GET", "/openapi.json"},
 		},
-		Plan:               NewPlanHandler(e.Plan, mux, decoder, encoder, errhandler, formatter),
-		GenHTTPOpenapiJSON: http.FileServer(fileSystemGenHTTPOpenapiJSON),
+		Plan: NewPlanHandler(e.Plan, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -76,7 +69,6 @@ func (s *Server) MethodNames() []string { return stox.MethodNames[:] }
 // Mount configures the mux to serve the stox endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountPlanHandler(mux, h.Plan)
-	MountGenHTTPOpenapiJSON(mux, goahttp.Replace("", "/./gen/http/openapi.json", h.GenHTTPOpenapiJSON))
 }
 
 // Mount configures the mux to serve the stox endpoints.
@@ -133,10 +125,4 @@ func NewPlanHandler(
 			errhandler(ctx, w, err)
 		}
 	})
-}
-
-// MountGenHTTPOpenapiJSON configures the mux to serve GET request made to
-// "/openapi.json".
-func MountGenHTTPOpenapiJSON(mux goahttp.Muxer, h http.Handler) {
-	mux.Handle("GET", "/openapi.json", h.ServeHTTP)
 }

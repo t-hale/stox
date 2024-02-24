@@ -6,40 +6,25 @@ info:
 servers:
     - url: http://0.0.0.0:8080
 paths:
-    /openapi.json:
-        get:
-            tags:
-                - stox
-            summary: Download ./gen/http/openapi.json
-            operationId: stox#/openapi.json
-            responses:
-                "200":
-                    description: File downloaded
     /plan:
         post:
-            tags:
-                - stox
-            summary: plan stox
             operationId: stox#plan
             requestBody:
-                required: true
                 content:
                     application/json:
-                        schema:
-                            $ref: '#/components/schemas/PlanRequestBody'
                         example:
                             GrantDate: "1982-02-19"
                             Symbol: pu2
                             UnitsGranted: 3172591699515641958
                             VestDate: "1987-04-16"
                             VestFrequency: monthly
+                        schema:
+                            $ref: '#/components/schemas/PlanRequestBody'
+                required: true
             responses:
                 "200":
-                    description: OK response.
                     content:
                         application/json:
-                            schema:
-                                $ref: '#/components/schemas/VestingPlanResponse'
                             example:
                                 Price: 0.8825776127720387
                                 Symbol: Ea quis sint sed atque cumque.
@@ -62,6 +47,14 @@ paths:
                                       TotalUnitsGranted: 7899848534443619422
                                       UnitsGranted: 8659015700085933293
                                       UnitsRemaining: 1222918483882356424
+                            schema:
+                                $ref: '#/components/schemas/VestingPlanResponse'
+                    description: OK response.
+            summary: plan stox
+            tags:
+                - stox
+            x-google-backend:
+                address: https://stox-xuqgkxzwta-uc.a.run.app
 components:
     schemas:
         PlanRequestBody:

@@ -13,28 +13,12 @@ produces:
     - application/xml
     - application/gob
 paths:
-    /openapi.json:
-        get:
-            tags:
-                - stox
-            summary: Download ./gen/http/openapi.json
-            operationId: stox#/openapi.json
-            responses:
-                "200":
-                    description: File downloaded
-                    schema:
-                        type: file
-            schemes:
-                - http
     /plan:
         post:
-            tags:
-                - stox
-            summary: plan stox
             operationId: stox#plan
             parameters:
-                - name: PlanRequestBody
-                  in: body
+                - in: body
+                  name: PlanRequestBody
                   required: true
                   schema:
                     $ref: '#/definitions/StoxPlanRequestBody'
@@ -51,6 +35,11 @@ paths:
                         $ref: '#/definitions/StoxPlanResponseBody'
             schemes:
                 - http
+            summary: plan stox
+            tags:
+                - stox
+            x-google-backend:
+                address: https://stox-xuqgkxzwta-uc.a.run.app
 definitions:
     StoxPlanRequestBody:
         title: StoxPlanRequestBody
