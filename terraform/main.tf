@@ -34,3 +34,16 @@ resource "google_api_gateway_gateway" "api_gw" {
   api_config = google_api_gateway_api_config.api_cfg.id
   gateway_id = "stox-gateway"
 }
+
+resource "google_cloud_run_v2_service" "default" {
+  provider = google-beta
+  name     = "stox"
+  location = local.region
+  ingress = "INGRESS_TRAFFIC_ALL"
+
+  template {
+    containers {
+      image = "gcr.io/${local.project}/ubuntu"
+    }
+  }
+}
