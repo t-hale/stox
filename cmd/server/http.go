@@ -53,7 +53,7 @@ func handleHTTPServer(ctx context.Context, u *url.URL, stoxEndpoints *stox.Endpo
 	)
 	{
 		eh := errorHandler(logger)
-		stoxServer = stoxsvr.New(stoxEndpoints, mux, dec, enc, eh, nil, nil)
+		stoxServer = stoxsvr.New(stoxEndpoints, mux, dec, enc, eh, nil)
 		if debug {
 			servers := goahttp.Servers{
 				stoxServer,

@@ -29,7 +29,6 @@ go_library(
         "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_polygon_io_client_go//rest",
         "@com_github_polygon_io_client_go//rest/models",
-        "@com_google_cloud_go_logging//:logging",
     ],
 )
 
