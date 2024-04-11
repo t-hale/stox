@@ -29,24 +29,11 @@ steps:
       - 'build'
       - '-t'
       - 'gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$_PROJECT/$_APP_IMAGE:latest'
       - '--build-arg'
       - 'port=8080'
       - '.'
-  - id: "Push the container image to Artifact Registry"
-    name: 'gcr.io/cloud-builders/docker'
-    args: [ 'push', 'gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA' ]
-  - id: "Deploy container image to Cloud Run"
-    name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: "gcloud"
-    args:
-      - 'run'
-      - 'deploy'
-      - '$_SERVICE'
-      - '--image'
-      - 'gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA'
-      - '--region'
-      - '$_REGION'
-      - '--port'
-      - '8080'
 images:
   - "gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA"
+  - "gcr.io/$_PROJECT/$_APP_IMAGE:latest"
