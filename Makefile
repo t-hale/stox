@@ -8,7 +8,7 @@ PROJECT ?= subtle-canto-412404
 REGION ?= us-central1
 SERVICE_ACCOUNT ?= infrastructure@subtle-canto-412404.iam.gserviceaccount.com
 
-apply:		## Deploy infrastructure
+apply: gen gazelle	## Deploy infrastructure
 	@gcloud infra-manager deployments apply projects/$(PROJECT)/locations/$(REGION)/deployments/$(DEPLOYMENT) \
       --service-account projects/$(PROJECT)/serviceAccounts/$(SERVICE_ACCOUNT) \
       --git-source-repo=$(GITHUB_REPO) \
@@ -17,6 +17,9 @@ apply:		## Deploy infrastructure
 
 destroy:	## Run terraform destroy
 	@gcloud infra-manager deployments delete projects/$(PROJECT)/locations/$(REGION)/deployments/$(DEPLOYMENT)
+
+gazelle:	## Run gazelle
+	@gazelle update
 
 gen:		## Run the goa gen command
 	@goa gen github.com/t-hale/stox/design

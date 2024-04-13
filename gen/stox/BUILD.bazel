@@ -9,5 +9,5 @@ go_library(
     ],
     importpath = "github.com/t-hale/stox/gen/stox",
     visibility = ["//visibility:public"],
-    deps = ["@design_goa_goa_v3//pkg"],
+    deps = ["@design_goa_goa_v3//pkg:go_default_library"],
 )

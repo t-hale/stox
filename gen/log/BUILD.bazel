@@ -5,5 +5,5 @@ go_library(
     srcs = ["logger.go"],
     importpath = "github.com/t-hale/stox/gen/log",
     visibility = ["//visibility:public"],
-    deps = ["@com_github_rs_zerolog//:zerolog"],
+    deps = ["@com_github_rs_zerolog//:go_default_library"],
 )

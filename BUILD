@@ -25,10 +25,10 @@ go_library(
         "//gen/log",
         "//gen/stox",
         "//utils",
-        "@com_github_alpacahq_alpaca_trade_api_go_v3//marketdata",
+        "@com_github_alpacahq_alpaca_trade_api_go_v3//marketdata:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",
-        "@com_github_polygon_io_client_go//rest",
-        "@com_github_polygon_io_client_go//rest/models",
+        "@com_github_polygon_io_client_go//rest:go_default_library",
+        "@com_github_polygon_io_client_go//rest/models:go_default_library",
     ],
 )
 
@@ -39,10 +39,10 @@ go_test(
     deps = [
         "//gen/stox",
         "//utils",
-        "@com_github_alpacahq_alpaca_trade_api_go_v3//marketdata",
-        "@com_github_google_go_cmp//cmp",
-        "@com_github_google_go_cmp//cmp/cmpopts",
-        "@org_golang_google_protobuf//proto",
+        "@com_github_alpacahq_alpaca_trade_api_go_v3//marketdata:go_default_library",
+        "@com_github_google_go_cmp//cmp:go_default_library",
+        "@com_github_google_go_cmp//cmp/cmpopts:go_default_library",
+        "@org_golang_google_protobuf//proto:go_default_library",
     ],
 )
 
