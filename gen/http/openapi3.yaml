@@ -54,7 +54,7 @@ paths:
             tags:
                 - stox
             x-google-backend:
-                address: https://stox-xuqgkxzwta-uc.a.run.app
+                address: https://stox-xuqgkxzwta-ue.a.run.app/plan
 components:
     schemas:
         PlanRequestBody:

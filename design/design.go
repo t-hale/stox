@@ -19,17 +19,12 @@ var _ = Service("stox", func() {
 	Description("The stox service provides advisors with a comprehensive view of a particular stock schedule.")
 
 	Method("plan", func() {
-		Meta("openapi:extension:x-google-backend", `{"address":"https://stox-xuqgkxzwta-uc.a.run.app"}`)
+		Meta("openapi:extension:x-google-backend", `{"address":"https://stox-xuqgkxzwta-ue.a.run.app/plan"}`)
 		Payload(VestingPlanRequest)
 		Result(VestingPlanResponse)
 
 		HTTP(func() {
 			POST("/plan")
 		})
-
-		//GRPC(func() {
-		//})
 	})
-
-	//Files("/openapi.json", "./gen/http/openapi.json")
 })

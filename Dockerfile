@@ -5,6 +5,7 @@ ENV PORT=$port
 
 #RUN apt-get update
 #RUN apt-get install -y netcat
+RUN apt-get install -y ca-certificates
 
 WORKDIR /app
 

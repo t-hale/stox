@@ -17,7 +17,7 @@ go_library(
     importpath = "github.com/t-hale/stox/design",
     visibility = ["//visibility:public"],
     deps = [
-        "@design_goa_goa_v3//dsl",
-        "@design_goa_plugins_v3//zerologger",
+        "@design_goa_goa_v3//dsl:go_default_library",
+        "@design_goa_plugins_v3//zerologger:go_default_library",
     ],
 )

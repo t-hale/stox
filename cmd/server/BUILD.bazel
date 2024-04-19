@@ -13,9 +13,9 @@ go_library(
         "//gen/http/stox/server",
         "//gen/log",
         "//gen/stox",
-        "@design_goa_goa_v3//http",
-        "@design_goa_goa_v3//http/middleware",
-        "@design_goa_goa_v3//middleware",
+        "@design_goa_goa_v3//http:go_default_library",
+        "@design_goa_goa_v3//http/middleware:go_default_library",
+        "@design_goa_goa_v3//middleware:go_default_library",
     ],
 )
 
