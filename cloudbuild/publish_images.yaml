@@ -6,14 +6,11 @@ options:
     - "GOTMPDIR=$_GOTMPDIR"
 substitutions:
   _BAZEL_IMAGE : "gcr.io/cloud-builders/bazel:6.2.1"
-  _GO_IMAGE : "golang:1.21"
   _GOPATH : "/workspace/go"
   _GOCACHE : "/workspace/go/cache"
   _GOTMPDIR : "/workspace/go/tmp"
   _PROJECT : "subtle-canto-412404"
-  _REGION : "us-central1"
   _APP_IMAGE : "ubuntu"
-  _SERVICE : "stox"
 steps:
   - id: "Build the stox server"
     name: "$_BAZEL_IMAGE"
@@ -34,6 +31,12 @@ steps:
       - '--build-arg'
       - 'port=8080'
       - '.'
+  - id: Update the qa tag
+    name: "bash"
+    script: |
+      #!/usr/bin/env bash
+      git tag -f qa
+      git push origin qa
 images:
   - "gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA"
   - "gcr.io/$_PROJECT/$_APP_IMAGE:latest"
