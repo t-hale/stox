@@ -32,11 +32,21 @@ steps:
       - 'port=8080'
       - '.'
   - id: Update the qa tag
-    name: "bash"
-    script: |
-      #!/usr/bin/env bash
-      git tag -f qa
-      git push origin qa
+    name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'git'
+    args:
+      - 'tag'
+      - '-f'
+      - 'qa'
+
+  - id: Push the qa tag to remote
+    name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'git'
+    args:
+      - 'push'
+      - 'origin'
+      - 'qa'
+
 images:
   - "gcr.io/$_PROJECT/$_APP_IMAGE:$COMMIT_SHA"
   - "gcr.io/$_PROJECT/$_APP_IMAGE:latest"
